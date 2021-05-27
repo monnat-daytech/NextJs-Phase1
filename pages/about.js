@@ -1,5 +1,5 @@
-import Dbhead from "../components/dbhead";
-import Appabout from '../components/appabout'
+import Appabout from "../components/Indexs/appabout";
+import Dbhead from "../components/Indexs/dbhead";
 import "tailwindcss/tailwind.css";
 
 const about = () => {

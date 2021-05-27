@@ -1,6 +1,6 @@
 import "tailwindcss/tailwind.css";
 import App from "../components/app";
-import Dbhead from "../components/dbhead";
+import Dbhead from "../components/Indexs/dbhead";
 
 const Index = () => {
   return (
