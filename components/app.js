@@ -1,33 +1,57 @@
-import Counter from "./Cards/counter";
-import JustSay from "./Cards/justSay";
-import Timer from "./Cards/timer";
 import WidgetCounter from "./WidgetCards/widgetCounter";
 import WidgetJustSay from "./WidgetCards/widgetJustSay";
 import WidgetTimer from "./WidgetCards/widgetTimer";
 import { useState } from "react";
 import Modal from "./modal";
-import Card from "./Cards/card";
-import Allcard from './Cards/allcard'
+import Allcard from "./Cards/allcard";
+import ModalSetting from './modalSetting'
 
 const App = () => {
   const [showModal, setShowModal] = useState(false);
-  // const [data, setData] = useState();
-  const [cardList, setCardList] = useState([]);
-
-  const [widgetShowCards, setWidgetShowCards] = useState({
-    CountCard: 0,
-    JustSayCard: false,
-    CounterCard: false,
-    TimerCard: false,
-  });
+  const [showSetting, setShowSetting] = useState(false);
+  const [newInput, setNewInput] = useState();
+  const [cardList, setCardList] = useState([
+    {
+      content: "",
+      check: "",
+      id: "",
+    },
+  ]);
   const [validate, setValidate] = useState({
     JustSay: false,
     Counter: false,
   });
   const [modalCode, setModalCode] = useState({
     JustSayCode: false,
+    EditJustSayCode : false,
     CounterCode: false,
   });
+
+  const onClickBtnEditJustSay =(input) =>{
+    setModalCode({EditJustSayCode : false})
+    setCardList(
+      cardList.map((card) => {
+              if (card.id === newInput.id) {
+                  newInput.content = input
+                  return newInput
+              } else {
+                  return card; 
+              }
+          }),
+      );
+
+  }
+  const onClickIconEditJustSay = (item) => {
+    alert("asdsd")
+    console.log(item.id)
+    setNewInput(item)
+    setModalCode({EditJustSayCode : true})
+  }
+
+  const onClickCloseCard = (item) => {
+      setCardList(cardList.filter((_item) => _item.id !== item.id))
+  };
+
   const onClickWidgetCounter = () => {
     setModalCode({ CounterCode: true });
     setShowModal(false);
@@ -42,6 +66,10 @@ const App = () => {
     setShowModal(true);
   };
 
+  const onClickSetting = () => {
+    setShowSetting(true)
+  }
+
   const onClickIconCancle = () => {
     setShowModal(false);
     setModalCode(false);
@@ -49,13 +77,14 @@ const App = () => {
 
   const onClickBtnAddCounter = (input) => {
     if (input > 0) {
+      const idr = Math.floor(Math.random() * 1000) + 1;
       setShowModal(false);
       setModalCode(false);
-
-      
-      const newData = [...cardList, input];
+      const newData = [
+        ...cardList,
+        { content: input, check: "Counter", id: idr },
+      ];
       setCardList(newData);
-      
     } else if (input < 0) {
       setValidate({ Counter: 1 });
     } else if (input == 0) {
@@ -65,31 +94,26 @@ const App = () => {
 
   const onClickBtnAddJustSay = (input) => {
     if (input.length > 2) {
+      const idr = Math.floor(Math.random() * 1000) + 1;
       setShowModal(false);
       setModalCode(false);
-      setWidgetShowCards({ JustSayCard: true });
-      setWidgetShowCards({ CountCard: +1 });
-      
-      
-      const newData = [...cardList, input];
+      const newData = [
+        ...cardList,
+        { content: input, check: "JustSay", id: idr },
+      ];
       setCardList(newData);
-         // setData(<JustSay input={input} />);
-
     } else {
       setValidate({ JustSay: true });
     }
   };
 
-  // const showListCard = cardList.map((item, index) => {
-  //   console.log(item)
-  //   return (
-  //     <div class="md:inner md:w-1/2 pb-4 md:pr-4" key={index}>
-  //       <div class="p-5 border-1 bg-white rounded-2xl relative undefined">
-  //         {item}
-  //       </div>
-  //     </div>
-  //   );
-  // });
+  const onClickWidgetTimer = () => {
+    const idr = Math.floor(Math.random() * 1000) + 1;
+    setShowModal(false);
+    setModalCode(false);
+    const newData = [...cardList, { check: "Timer", id: idr }];
+    setCardList(newData);
+  };
 
   return (
     <div class="pt-3">
@@ -101,6 +125,7 @@ const App = () => {
           onClickBtnAddJustSay={onClickBtnAddJustSay}
           onClickBtnAddCounter={onClickBtnAddCounter}
           validate={validate}
+          onClickBtnEditJustSay={onClickBtnEditJustSay}
         >
           <div>
             <h2 class="text-xl undefined"> Add widget</h2>
@@ -111,7 +136,7 @@ const App = () => {
               <div onClick={onClickWidgetCounter} class="w-1/3 pt-1.5 pl-1.5">
                 <WidgetCounter />
               </div>
-              <div class="w-1/3 pt-1.5 pl-1.5">
+              <div onClick={onClickWidgetTimer} class="w-1/3 pt-1.5 pl-1.5">
                 <WidgetTimer />
               </div>
               <div class="w-1/3 pt-1.5 pl-1.5">a</div>
@@ -120,6 +145,9 @@ const App = () => {
             </div>
           </div>
         </Modal>
+        <ModalSetting showSetting={showSetting}>
+    
+        </ModalSetting>
         <button
           onClick={onClickAddWidget}
           class="text-white focus:outline-none mr-1 px-4 py-1 rounded-md bg-blue-500 hover:bg-blue-600"
@@ -140,8 +168,8 @@ const App = () => {
             </g>
           </svg>
           Add Widget
-        </button>
-        <button class="text-white focus:outline-none px-4 py-1 rounded-md bg-gray-500 hover:bg-gray-600">
+        </button> 
+        <button onClick={onClickSetting} class="text-white focus:outline-none px-4 py-1 rounded-md bg-gray-500 hover:bg-gray-600">
           <svg
             stroke="currentColor"
             fill="currentColor"
@@ -161,7 +189,7 @@ const App = () => {
         </button>
       </div>
       <div class="md:flex md:flex-wrap md:-mr-4 ">
-        {widgetShowCards.CountCard == 0 ? (
+        {cardList.length == 1 ? (
           <div class="md:inner md:w-1/2 pb-4 md:pr-4">
             <div class="p-5 border-1 bg-white rounded-2xl relative undefined">
               {" "}
@@ -179,9 +207,13 @@ const App = () => {
             </div>
           </div>
         ) : null}
-        <Allcard cardList={cardList}/>
+
+        {cardList.length > 1 ? (
+          <Allcard cardList={cardList} onClickCloseCard={onClickCloseCard} onClickIconEditJustSay={onClickIconEditJustSay} />
+        ) : null}
+
         {/* {showListCard} */}
-        
+
         {/* {widgetShowCards.JustSayCard ? (
        
         ) : null} */}

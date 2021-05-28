@@ -1,7 +1,8 @@
 import { useState } from "react";
 import Card from "./card";
+import { IoClose } from "react-icons/io5";
 
-const Timer = () => {
+const Timer = ({onClickCloseCard = () => {}}) => {
   const [time, setTime] = useState({ ms: 0, s: 0, m: 0, h: 0 });
   const [interv, setInterv] = useState();
   const [status, setStatus] = useState(0);
@@ -47,7 +48,7 @@ const Timer = () => {
     <Card>
         <h2 class="text-lg font-bold text-gray-400 mb-1.5">Timer</h2>
         <div class="absolute top-5 right-5">
-          <button class="text-lg text-gray-600 focus:outline-none undefined"></button>
+        <button onClick={onClickCloseCard} class="text-lg text-gray-600 focus:outline-none undefined"><IoClose/></button>
         </div>
         <div class="text-center">
           <div class="flex items-center justify-center mt-4 mb-6">
