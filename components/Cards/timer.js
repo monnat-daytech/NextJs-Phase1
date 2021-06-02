@@ -46,13 +46,13 @@ const Timer = ({onClickCloseCard = () => {}}) => {
 
   return (
     <Card>
-        <h2 class="text-lg font-bold text-gray-400 mb-1.5">Timer</h2>
-        <div class="absolute top-5 right-5">
-        <button onClick={onClickCloseCard} class="text-lg text-gray-600 focus:outline-none undefined"><IoClose/></button>
+        <h2 className="text-lg font-bold text-gray-400 mb-1.5">Timer</h2>
+        <div className="absolute top-5 right-5">
+        <button onClick={onClickCloseCard} className="text-lg text-gray-600 focus:outline-none undefined"><IoClose/></button>
         </div>
-        <div class="text-center">
-          <div class="flex items-center justify-center mt-4 mb-6">
-            <div class="text-6xl mx-7">
+        <div className="text-center">
+          <div className="flex items-center justify-center mt-4 mb-6">
+            <div className="text-6xl mx-7">
               <span>{time.m >= 10 ? time.m : "0" + time.m}</span>&nbsp;:&nbsp;
               <span>{time.s >= 10 ? time.s : "0" + time.s}</span>
             </div>
@@ -61,7 +61,7 @@ const Timer = ({onClickCloseCard = () => {}}) => {
             <div>
               <button
                 onClick={onClickBtnStartTimer}
-                class="text-white focus:outline-none mx-1 px-4 py-1 rounded-md bg-blue-500 hover:bg-blue-600"
+                className="text-white focus:outline-none mx-1 px-4 py-1 rounded-md bg-blue-500 hover:bg-blue-600"
               >
                 Start
               </button>
@@ -69,14 +69,14 @@ const Timer = ({onClickCloseCard = () => {}}) => {
                 time.ms === 0 ? (
                   <button
                   onClick={onClickBtnResetTimer}
-                  class="text-white focus:outline-none mx-1 px-4 py-1 rounded-md bg-gray-300 cursor-default"
+                  className="text-white focus:outline-none mx-1 px-4 py-1 rounded-md bg-gray-300 cursor-default"
                 >
                   Reset
                 </button>
                 ) : (
                   <button
                   onClick={onClickBtnResetTimer}
-                  class="text-white focus:outline-none mx-1 px-4 py-1 rounded-md bg-blue-500 hover:bg-blue-600"
+                  className="text-white focus:outline-none mx-1 px-4 py-1 rounded-md bg-blue-500 hover:bg-blue-600"
                 >
                   Reset
                 </button>
@@ -92,13 +92,13 @@ const Timer = ({onClickCloseCard = () => {}}) => {
             <div>
               <button
                 onClick={onClickBtnPauseTimer}
-                class="text-white focus:outline-none mx-1 px-4 py-1 rounded-md bg-blue-500 hover:bg-blue-600"
+                className="text-white focus:outline-none mx-1 px-4 py-1 rounded-md bg-blue-500 hover:bg-blue-600"
               >
                 Pause
               </button>
               <button
                 onClick={onClickBtnResetTimer}
-                class="text-white focus:outline-none mx-1 px-4 py-1 rounded-md bg-blue-500 hover:bg-blue-600"
+                className="text-white focus:outline-none mx-1 px-4 py-1 rounded-md bg-blue-500 hover:bg-blue-600"
               >
                 Reset
               </button>

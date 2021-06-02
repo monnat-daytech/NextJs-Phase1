@@ -1,13 +1,13 @@
 
 const WidgetCounter = () => {
   return (
-    <div class="text-center bg-white text-gray-600 rounded-2xl p-3 md:p-4 hover:bg-blue-500 hover:text-white cursor-pointer">
+    <div className="text-center bg-white text-gray-600 rounded-2xl p-3 md:p-4 hover:bg-blue-500 hover:text-white cursor-pointer">
       <svg
         stroke="currentColor"
         fill="currentColor"
         stroke-width="0"
         viewBox="0 0 24 24"
-        class="mx-auto text-4xl"
+        className="mx-auto text-4xl"
         height="1em"
         width="1em"
         xmlns="http://www.w3.org/2000/svg"
@@ -17,7 +17,7 @@ const WidgetCounter = () => {
           <path d="M3 3h18a1 1 0 0 1 1 1v16a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1zm1 2v14h16V5H4zm5 6h2v2H9v2H7v-2H5v-2h2V9h2v2zm4 0h6v2h-6v-2z"></path>
         </g>
       </svg>
-      <h3 class="mt-1 font-semibold text-sm ">Counter</h3>
+      <h3 className="mt-1 font-semibold text-sm ">Counter</h3>
     </div>
   );
 };

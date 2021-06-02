@@ -1,73 +1,83 @@
 import { useState } from "react";
+import {useEffect} from 'react'
 import Card from "./card";
 import { IoClose } from "react-icons/io5";
 
-const Counter = ({item , onClickCloseCard = () => {}}) => {
-  const [number, setNumber] = useState(item);
-  const onClickBtIncreast = () => {
+const Counter = ({item ,BtnIncreaseCounter, BtnDecreaseCounter ,onClickCloseCard, BtnSetZero }) => {
+
+  // useEffect(() => {
+  //   setNumber(item)
+  // }, [item])
+
+  const [number, setNumber] = useState(parseInt(item));
+  const onClickBtIncrease = () => {
     setNumber(number + 1);
+    BtnIncreaseCounter(number)
+    console.log(typeof(number))
+
   };
-  const onClickBtnDecreast = () => {
+  const onClickBtnDecrease = () => {
     setNumber(number - 1);
+    BtnDecreaseCounter(number)
   };
   const onClickBtnSetZero = () => {
+    BtnSetZero(number)
     setNumber(0);
   };
 
-  
 
   return (
     <Card>
-        <h2 class="text-lg font-bold text-gray-400 mb-1.5"> Counter</h2>
-        <div class="absolute top-5 right-5">
-        <button onClick={onClickCloseCard} class="text-lg text-gray-600 focus:outline-none undefined"><IoClose/></button>
+        <h2 className="text-lg font-bold text-gray-400 mb-1.5"> Counter</h2>
+        <div className="absolute top-5 right-5">
+        <button onClick={onClickCloseCard} className="text-lg text-gray-600 focus:outline-none undefined"><IoClose/></button>
         </div>
-        <div class="text-center">
+        <div className="text-center">
           {number > 0 ? (
             <>
-              <div class="flex items-center justify-center mt-4 mb-6">
+              <div className="flex items-center justify-center mt-4 mb-6">
                 <button
-                  onClick={onClickBtnDecreast}
-                  class="text-5xl rounded-full w-10 text-center focus:outline-none text-blue-500"
+                  onClick={onClickBtnDecrease}
+                  className="text-5xl rounded-full w-10 text-center focus:outline-none text-blue-500"
                 >
                   -
                 </button>
-                <div class="text-6xl mx-7">{number}</div>
+                <div className="text-6xl mx-7">{number}</div>
                 <button
-                  onClick={onClickBtIncreast}
-                  class="text-5xl rounded-full w-10 text-center focus:outline-none text-blue-500"
+                  onClick={onClickBtIncrease}
+                  className="text-5xl rounded-full w-10 text-center focus:outline-none text-blue-500"
                 >
                   +
                 </button>
               </div>
               <button
                 onClick={onClickBtnSetZero}
-                class="text-white focus:outline-none px-4 py-1 rounded-md bg-blue-500 "
+                className="text-white focus:outline-none px-4 py-1 rounded-md bg-blue-500 "
               >
                 set zero
               </button>
             </>
           ) : (
             <>
-              <div class="flex items-center justify-center mt-4 mb-6">
+              <div className="flex items-center justify-center mt-4 mb-6">
                 <button
-                  onClick={onClickBtnDecreast}
-                  class="text-5xl rounded-full w-10 text-center focus:outline-none text-gray-300 cursor-default"
+                  onClick={onClickBtnDecrease}
+                  className="text-5xl rounded-full w-10 text-center focus:outline-none text-gray-300 cursor-default"
                   disabled
                 >
                   -
                 </button>
-                <div class="text-6xl mx-7">{number}</div>
+                <div className="text-6xl mx-7">{number}</div>
                 <button
-                  onClick={onClickBtIncreast}
-                  class="text-5xl rounded-full w-10 text-center focus:outline-none text-blue-500"
+                  onClick={onClickBtIncrease}
+                  className="text-5xl rounded-full w-10 text-center focus:outline-none text-blue-500"
                 >
                   +
                 </button>
               </div>
               <button
                 onClick={onClickBtnSetZero}
-                class="text-white focus:outline-none px-4 py-1 rounded-md bg-gray-300 cursor-default"
+                className="text-white focus:outline-none px-4 py-1 rounded-md bg-gray-300 cursor-default"
                 disabled
               >
                 set zero

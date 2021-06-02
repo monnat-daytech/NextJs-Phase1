@@ -1,13 +1,13 @@
 const Appabout = () => {
   return (
     <>
-      <h2 class="text-xl undefined"> About </h2>
-      <div class="pt-3">
-        <div class="p-5 border-1 bg-white rounded-2xl relative undefined">
-          <h2 class="text-lg font-bold text-gray-400 mb-1.5">
+      <h2 className="text-xl undefined"> About </h2>
+      <div className="pt-3">
+        <div className="p-5 border-1 bg-white rounded-2xl relative undefined">
+          <h2 className="text-lg font-bold text-gray-400 mb-1.5">
             I love {"<programming />"}{" "}
           </h2>
-          <p class="mb-2">
+          <p className="mb-2">
             {"We have "}
             <strong>JustSay</strong>
             {", "}
@@ -24,7 +24,7 @@ const Appabout = () => {
           </p>
           <p>
             {"Crafted with "}
-            <span class="text-red-600"> ♥ </span>
+            <span className="text-red-600"> ♥ </span>
             {"by Nammon"}
           </p>
         </div>
