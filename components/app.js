@@ -5,8 +5,8 @@ import { useState } from "react";
 import Modal from "./modal";
 import Allcard from "./Cards/allcard";
 import ModalSetting from "./modalSetting";
-import { RiAddCircleLine } from "react-icons/ri";
-import { RiSettings3Line } from "react-icons/ri";
+import { RiAddCircleLine,RiSettings3Line } from "react-icons/ri";
+
 
 const App = () => {
   const [showModal, setShowModal] = useState(false);
