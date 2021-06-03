@@ -1,6 +1,7 @@
 import WidgetCounter from "./WidgetCards/widgetCounter";
 import WidgetJustSay from "./WidgetCards/widgetJustSay";
 import WidgetTimer from "./WidgetCards/widgetTimer";
+import WidgetJustShout from "./WidgetCards/widgetJustShout";
 import { useState } from "react";
 import Modal from "./modal";
 import Allcard from "./Cards/allcard";
@@ -9,6 +10,10 @@ import { RiAddCircleLine,RiSettings3Line } from "react-icons/ri";
 
 
 const App = () => {
+  const [numOfJustShout , setNumOfJustShout] = useState(0)
+  const [sumOfJustShout , setSumOfJustShout] = useState(0)
+  const [countJustShout , setCountJustShout] = useState(0)
+  const [settingJustShout, setSettingJustShout] = useState('');
   const [showModal, setShowModal] = useState(false);
   const [showSetting, setShowSetting] = useState(false);
   const [countCounter , setCountCounter] = useState(0)
@@ -29,6 +34,7 @@ const App = () => {
     JustSayCode: false,
     EditJustSayCode: false,
     CounterCode: false,
+    asd: '',
   });
   
   const BtnIncreaseCounter = (number) => {
@@ -93,7 +99,12 @@ const App = () => {
   };
   const onClickIconEditJustSay = (item) => {
     setNewInput(item);
-    setModalCode({ EditJustSayCode: true });
+    // cardList.map((card) => {
+    //   if(card.id === item.id){
+    //     setModalCode({EditJustSayCode: true, asd: item.content})
+    //   }
+    // })
+    setModalCode({ EditJustSayCode: true , asd: item.content});
   };
 
   const onClickCloseCard = (item) => {
@@ -115,11 +126,17 @@ const App = () => {
     setShowModal(false);
   };
 
+  const onClickWidgetJustShout = () => {
+    setModalCode({ JustShoutCode: true});
+    setShowModal(false)
+  }
+
   const onClickAddWidget = () => {
     setShowModal(true);
   };
 
   const onClickSetting = () => {
+    setSumOfJustShout(numOfJustShout * countJustShout)
     setShowSetting(true);
   };
 
@@ -161,7 +178,8 @@ const App = () => {
         { content: input, check: "JustSay", id: idr },
       ];
       setCardList(newData);
-    } else {
+    } 
+    else {
       setValidate({ JustSay: true });
     }
   };
@@ -174,9 +192,76 @@ const App = () => {
     setCardList(newData);
   };
 
+  const onClickBtnAddJustShout = (input) => {
+    if (input.length > 2) {
+      const idr = Math.floor(Math.random() * 1000) + 1;
+      setShowModal(false);
+      setModalCode(false);
+      setCountJustShout(input.length)
+      const newData = [
+        ...cardList,
+        { content: input, check: "JustShout", id: idr },
+      ];
+      setCardList(newData);
+    } 
+    else {
+      setValidate({ JustShout: true });
+    }
+  }
+
+
+  const MapJustShout = (itemJustShout) => {
+    setCardList(
+      cardList.map((card) => {
+        if (card.check === "JustShout") {
+          card.content = itemJustShout;
+          setNumOfJustShout(numOfJustShout + 1)
+          return card;
+        } else {
+          return card;
+        }
+      })
+    );
+  }
+
+  const onClickIconEditJustShout = () => {
+    // setNewInput(item);
+    setModalCode({ EditJustShoutCode: true });
+  }
+  const onClickBtnEditJustShout = (input) => {
+    setCountJustShout(input.length)
+    setModalCode({ EditJustSayCode: false });
+    setCardList(
+      cardList.map((card) => {
+        if (card.check === "JustShout") {
+          card.content = input
+          return card;
+        } else {
+          return card;
+        }
+      })
+    );
+
+  }
+  const onClickBtnEditJustShoutSetting = () => {
+    setCountJustShout(settingJustShout.length)
+    setCardList(
+      cardList.map((card) => {
+        if (card.check === "JustShout") {
+          card.content = settingJustShout;
+          return card;
+        } else {
+          return card;
+        }
+      })
+    );
+    setShowSetting(false)
+  }
+
   return (
     <div className="pt-3">
       <div className="mb-4">
+        {/* <button onClick={test}>asd</button> */}
         <Modal
           showModal={showModal}
           onClickIconCancle={onClickIconCancle}
@@ -185,6 +270,8 @@ const App = () => {
           onClickBtnAddCounter={onClickBtnAddCounter}
           validate={validate}
           onClickBtnEditJustSay={onClickBtnEditJustSay}
+          onClickBtnEditJustShout={onClickBtnEditJustShout}
+          onClickBtnAddJustShout={onClickBtnAddJustShout}
         >
           <div>
             <h2 className="text-xl undefined"> Add widget</h2>
@@ -192,13 +279,15 @@ const App = () => {
               <div onClick={onClickWidgetJustSay} className="w-1/3 pt-1.5 pl-1.5">
                 <WidgetJustSay />
               </div>
+              <div onClick={onClickWidgetJustShout} className="w-1/3 pt-1.5 pl-1.5">
+                <WidgetJustShout/>
+              </div>
               <div onClick={onClickWidgetCounter} className="w-1/3 pt-1.5 pl-1.5">
                 <WidgetCounter />
               </div>
               <div onClick={onClickWidgetTimer} className="w-1/3 pt-1.5 pl-1.5">
                 <WidgetTimer />
               </div>
-              <div className="w-1/3 pt-1.5 pl-1.5">a</div>
               <div className="w-1/3 pt-1.5 pl-1.5">b</div>
               <div className="w-1/3 pt-1.5 pl-1.5">c</div>
             </div>
@@ -221,7 +310,7 @@ const App = () => {
                 </div>
                 <div className="table-row">
                   <div className="table-cell pr-4 font-semibold">
-                    Total Just length:   {countAddJustSay}
+                    Total Just length:   {countAddJustSay + sumOfJustShout}
                   </div>
                   <div className="table-cell">{}</div>
                 </div>
@@ -245,20 +334,29 @@ const App = () => {
               <h2 className="text-lg font-bold text-gray-400 mb-1.5">
                 JustShout text
               </h2>
-              <fieldset disabled="">
-                <form className="flex">
+              <fieldset 
+              // disabled=""
+              >
+                <form className="flex" onSubmit={(e) => e.preventDefault()}>
                   <div className="flex-1 mr-1">
                     <input
+                      onChange={(event) => setSettingJustShout(event.target.value)}
                       type="text"
-                      className="w-full px-2.5 py-1 border focus:outline-none rounded-md"
+                      className="w-full px-2.5 py-1 border 
+                
+                      rounded-md"
                       placeholder="Enter text"
-                      value=""
+                      // value=""
+                      // focus:outline-none 
                     />
                   </div>
                   <div>
                     <button
-                      className="text-white focus:outline-none px-4 py-1 rounded-md bg-gray-300 cursor-default"
-                      disabled=""
+                      onClick={() => onClickBtnEditJustShoutSetting(settingJustShout)}
+                      className="text-whitepx-4 py-1 rounded-md bg-gray-300"
+                      //  cursor-default
+                      // focus:outline-none 
+                      // disabled=""
                     >
                       {" "}
                       Edit
@@ -367,9 +465,11 @@ const App = () => {
             cardList={cardList}
             onClickCloseCard={onClickCloseCard}
             onClickIconEditJustSay={onClickIconEditJustSay}
+            onClickIconEditJustShout={onClickIconEditJustShout}
             BtnIncreaseCounter={BtnIncreaseCounter}
             BtnDecreaseCounter={BtnDecreaseCounter}
             BtnSetZero={BtnSetZero}
+            MapJustShout={MapJustShout}
           />
         ) : null}
 
