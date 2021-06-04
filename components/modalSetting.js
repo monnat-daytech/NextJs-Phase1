@@ -1,7 +1,6 @@
 import { IoClose } from "react-icons/io5";
 
 const ModalSetting = ({ showSetting, children, onClickIconCloseSetting }) => {
-  console.log(showSetting);
   return (
     <>
       {showSetting ? (

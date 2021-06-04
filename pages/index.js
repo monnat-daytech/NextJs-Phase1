@@ -6,6 +6,7 @@ const Index = () => {
   return (
     <body className="w-100 max-w-4xl mx-auto p-5 bg-gray-200">
       <Dbhead />
+      
       <App />
     </body>
   );

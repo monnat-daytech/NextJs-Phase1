@@ -2,56 +2,63 @@ import WidgetCounter from "./WidgetCards/widgetCounter";
 import WidgetJustSay from "./WidgetCards/widgetJustSay";
 import WidgetTimer from "./WidgetCards/widgetTimer";
 import WidgetJustShout from "./WidgetCards/widgetJustShout";
+import WidgetOpenWeather from "./WidgetCards/widgetOpenWeather";
 import { useState } from "react";
 import Modal from "./modal";
 import Allcard from "./Cards/allcard";
 import ModalSetting from "./modalSetting";
-import { RiAddCircleLine,RiSettings3Line } from "react-icons/ri";
-
+import { RiAddCircleLine, RiSettings3Line } from "react-icons/ri";
+import axios from "axios";
 
 const App = () => {
-  const [numOfJustShout , setNumOfJustShout] = useState(0)
-  const [sumOfJustShout , setSumOfJustShout] = useState(0)
-  const [countJustShout , setCountJustShout] = useState(0)
-  const [settingJustShout, setSettingJustShout] = useState('');
+  const [city, setCity] = useState("");
+  const [numOfJustShout, setNumOfJustShout] = useState(0);
+  const [sumOfJustShout, setSumOfJustShout] = useState(0);
+  const [countJustShout, setCountJustShout] = useState(0);
+  const [settingJustShout, setSettingJustShout] = useState("");
   const [showModal, setShowModal] = useState(false);
   const [showSetting, setShowSetting] = useState(false);
-  const [countCounter , setCountCounter] = useState(0)
-  const [newInput, setNewInput] = useState();
-  const [countAddJustSay , setCountAddJustSay] = useState(0)
+  const [countCounter, setCountCounter] = useState(0);
+  const [newInputJustSay, setNewInputJustSay] = useState();
+  const [newInputOpenWeather, setNewInputOpenWeather] = useState();
+  const [countAddJustSay, setCountAddJustSay] = useState(0);
   const [cardList, setCardList] = useState([
     {
       content: "",
       check: "",
-      id: "", 
+      id: "",
     },
   ]);
   const [validate, setValidate] = useState({
     JustSay: false,
     Counter: false,
+    OpenWeather: false,
   });
   const [modalCode, setModalCode] = useState({
     JustSayCode: false,
     EditJustSayCode: false,
     CounterCode: false,
-    asd: '',
+    JustShoutCode: false,
+    EditJustShoutCode: false,
+    OpenWeatherCode: false,
+    EditOpenWeatherCode: false,
   });
-  
+
   const BtnIncreaseCounter = (number) => {
-    setCountCounter(countCounter + 1)
-    console.log(number)
-  }
+    setCountCounter(countCounter + 1);
+    console.log(number);
+  };
 
   const BtnDecreaseCounter = (number) => {
-    setCountCounter(countCounter - 1)
-    console.log(number)
-  }
+    setCountCounter(countCounter - 1);
+    console.log(number);
+  };
 
   const BtnSetZero = (number) => {
-    console.log(number)
-    setCountCounter(countCounter - number)
-  }
-  
+    console.log(number);
+    setCountCounter(countCounter - number);
+  };
+
   const onClickIconCloseSetting = () => {
     setShowSetting(false);
   };
@@ -60,7 +67,7 @@ const App = () => {
     setShowSetting(false);
     setCardList([0]);
     setCountCounter(0);
-    setCountAddJustSay(0)
+    setCountAddJustSay(0);
   };
 
   const onClickBtnSetZero = () => {
@@ -78,42 +85,42 @@ const App = () => {
   };
 
   const onClickBtnEditJustSay = (input) => {
-    setModalCode({ EditJustSayCode: false });
-    setCardList(
-      cardList.map((card) => {
-        if (card.id === newInput.id) {
-          //3 + 4 - 4 + 4
-          //ตัวที่รับเข้ามา + ตัวเก่า - ตัวเก่า + (ตัวทั้งหมด - ตัวเก่า)
-          // 3 + 4 - 4 + (8-4) 
-          // 4 + 3 - 4
-          // 3 + (8-4)
-          const num = input.length  + (countAddJustSay - card.content.length)
-          setCountAddJustSay(num)
-          newInput.content = input;
-          return newInput;
-        } else {
-          return card;
-        }
-      })
-    );
+    if (input.length > 2) {
+      setModalCode({ EditJustSayCode: false });
+      setCardList(
+        cardList.map((card) => {
+          if (card.id === newInputJustSay.id) {
+            //3 + 4 - 4 + 4
+            //ตัวที่รับเข้ามา + ตัวเก่า - ตัวเก่า + (ตัวทั้งหมด - ตัวเก่า)
+            // 3 + 4 - 4 + (8-4)
+            // 4 + 3 - 4
+            // 3 + (8-4)
+            const num = input.length + (countAddJustSay - card.content.length);
+            setCountAddJustSay(num);
+            newInputJustSay.content = input;
+            return newInputJustSay;
+          } else {
+            return card;
+          }
+        })
+      );
+      setValidate({ JustSay: false });
+    } else {
+      setValidate({ JustSay: true });
+    }
   };
   const onClickIconEditJustSay = (item) => {
-    setNewInput(item);
-    // cardList.map((card) => {
-    //   if(card.id === item.id){
-    //     setModalCode({EditJustSayCode: true, asd: item.content})
-    //   }
-    // })
-    setModalCode({ EditJustSayCode: true , asd: item.content});
+    setNewInputJustSay(item);
+    setModalCode({ EditJustSayCode: true, asd: item.content });
   };
 
   const onClickCloseCard = (item) => {
     setCardList(cardList.filter((_item) => _item.id !== item.id));
     cardList.map((card) => {
-      if(card.id === item.id){
-        setCountAddJustSay(countAddJustSay  - item.content.length)
+      if (card.id === item.id) {
+        setCountAddJustSay(countAddJustSay - item.content.length);
       }
-    })
+    });
   };
 
   const onClickWidgetCounter = () => {
@@ -127,33 +134,50 @@ const App = () => {
   };
 
   const onClickWidgetJustShout = () => {
-    setModalCode({ JustShoutCode: true});
-    setShowModal(false)
-  }
+    setModalCode({ JustShoutCode: true });
+    setShowModal(false);
+  };
+
+  const onClickWidgetOpenWeather = () => {
+    setModalCode({ OpenWeatherCode: true });
+    setShowModal(false);
+  };
 
   const onClickAddWidget = () => {
     setShowModal(true);
   };
 
   const onClickSetting = () => {
-    setSumOfJustShout(numOfJustShout * countJustShout)
+    setSumOfJustShout(numOfJustShout * countJustShout);
     setShowSetting(true);
+    var a = 100;
+    cardList.map((card) => {
+      if (card.check === "OpenWeather") {
+        try {
+          if (card.content.main.temp < a) {
+            a = card.content.main.temp;
+            setCity(card.content.name);
+          }
+        } catch {}
+      }
+    });
   };
 
   const onClickIconCancle = () => {
+    setValidate(false);
     setShowModal(false);
     setModalCode(false);
   };
 
   const onClickBtnAddCounter = (input) => {
-    const test = parseInt(input)
+    const test = parseInt(input);
     if (input > 0) {
       const idr = Math.floor(Math.random() * 1000) + 1;
       setShowModal(false);
       setModalCode(false);
-      console.log(typeof (test))
+      console.log(typeof test);
       // console.log(typeof (countCounter))
-      setCountCounter(parseInt(test + parseInt( countCounter)))
+      setCountCounter(parseInt(test + parseInt(countCounter)));
       const newData = [
         ...cardList,
         { content: input, check: "Counter", id: idr },
@@ -167,19 +191,24 @@ const App = () => {
   };
 
   const onClickBtnAddJustSay = (input) => {
-    if (input.length > 2) {
-      const idr = Math.floor(Math.random() * 1000) + 1;
-      setShowModal(false);
-      setModalCode(false);
-      const num = countAddJustSay + input.length
-      setCountAddJustSay(num)
-      const newData = [
-        ...cardList,
-        { content: input, check: "JustSay", id: idr },
-      ];
-      setCardList(newData);
-    } 
-    else {
+    if (input != null) {
+      if (input.length > 2) {
+        const idr = Math.floor(Math.random() * 1000) + 1;
+        setShowModal(false);
+        setModalCode(false);
+        const num = countAddJustSay + input.length;
+        setCountAddJustSay(num);
+        const newData = [
+          ...cardList,
+          { content: input, check: "JustSay", id: idr },
+        ];
+        setCardList(newData);
+        setValidate({ JustSay: false });
+      }
+      else{
+        setValidate({ JustSay: true });
+      }
+    } else {
       setValidate({ JustSay: true });
     }
   };
@@ -197,54 +226,51 @@ const App = () => {
       const idr = Math.floor(Math.random() * 1000) + 1;
       setShowModal(false);
       setModalCode(false);
-      setCountJustShout(input.length)
+      setCountJustShout(input.length);
       const newData = [
         ...cardList,
         { content: input, check: "JustShout", id: idr },
       ];
       setCardList(newData);
-    } 
-    else {
+    } else {
       setValidate({ JustShout: true });
     }
-  }
-
+  };
 
   const MapJustShout = (itemJustShout) => {
     setCardList(
       cardList.map((card) => {
         if (card.check === "JustShout") {
           card.content = itemJustShout;
-          setNumOfJustShout(numOfJustShout + 1)
+          setNumOfJustShout(numOfJustShout + 1);
           return card;
         } else {
           return card;
         }
       })
     );
-  }
+  };
 
   const onClickIconEditJustShout = () => {
-    // setNewInput(item);
+    // setnewInputJustSay(item);
     setModalCode({ EditJustShoutCode: true });
-  }
+  };
   const onClickBtnEditJustShout = (input) => {
-    setCountJustShout(input.length)
+    setCountJustShout(input.length);
     setModalCode({ EditJustSayCode: false });
     setCardList(
       cardList.map((card) => {
         if (card.check === "JustShout") {
-          card.content = input
+          card.content = input;
           return card;
         } else {
           return card;
         }
       })
     );
-
-  }
+  };
   const onClickBtnEditJustShoutSetting = () => {
-    setCountJustShout(settingJustShout.length)
+    setCountJustShout(settingJustShout.length);
     setCardList(
       cardList.map((card) => {
         if (card.check === "JustShout") {
@@ -255,13 +281,141 @@ const App = () => {
         }
       })
     );
-    setShowSetting(false)
-  }
+    setShowSetting(false);
+  };
+
+  const onClickBtnAddOpenWeather = async (input) => {
+    if (input.length > 2) {
+      try {
+        const dateFormat = require("dateformat");
+        const now = new Date();
+        const idr = Math.floor(Math.random() * 1000) + 1;
+        setShowModal(false);
+        setModalCode(false);
+        const filter = {
+          api: "http://api.openweathermap.org/data/2.5/weather",
+          appid: "e2251b632eb8595e223a0f0fb1e79ad2",
+          units: "metric",
+        };
+
+        const url = `${filter.api}?q=${input}&appid=${filter.appid}&units=${filter.units}`;
+        const result = await axios.get(url);
+        const newDatas = [
+          ...cardList,
+          {
+            content: result.data,
+            check: "OpenWeather",
+            id: idr,
+            time: dateFormat(now, "dddd, mmmm d, yy, h:MM:ss TT"),
+          },
+        ];
+        setCardList(newDatas);
+        setValidate({ OpenWeather: false });
+      } catch (err) {
+        const idr = Math.floor(Math.random() * 1000) + 1;
+        const dateFormat = require("dateformat");
+        const now = new Date();
+        const newDatas = [
+          ...cardList,
+          {
+            content: { input: input, valid: true },
+            check: "OpenWeather",
+            id: idr,
+            time: dateFormat(now, "dddd, mmmm d, yy, h:MM:ss TT"),
+          },
+        ];
+        setCardList(newDatas);
+        console.log(err.response);
+      }
+    } else {
+      setValidate({ OpenWeather: true });
+    }
+  };
+
+  const onClickOpenWeatherRefresh = async (item) => {
+    try {
+      const dateFormat = require("dateformat");
+      const now = new Date();
+      const filter = {
+        api: "http://api.openweathermap.org/data/2.5/weather",
+        appid: "e2251b632eb8595e223a0f0fb1e79ad2",
+        units: "metric",
+      };
+      const url = `${filter.api}?q=${item.content.name}&appid=${filter.appid}&units=${filter.units}`;
+      const result = await axios.get(url);
+      setCardList(
+        cardList.map((card) => {
+          if (card.id === item.id) {
+            card.content = result.data;
+            card.time = dateFormat(now, "dddd, mmmm d, yy, h:MM:ss TT");
+            return card;
+          } else {
+            return card;
+          }
+        })
+      );
+    } catch (err) {
+      console.log(err.response);
+    }
+  };
+
+  const onClickIconEditOpenWeather = (item) => {
+    setNewInputOpenWeather(item);
+    setModalCode({ EditOpenWeatherCode: true });
+  };
+
+  const onClickBtnEditOpenWeather = async (input) => {
+    if (input.length > 2) {
+      try {
+        const dateFormat = require("dateformat");
+        const now = new Date();
+        const filter = {
+          api: "http://api.openweathermap.org/data/2.5/weather",
+          appid: "e2251b632eb8595e223a0f0fb1e79ad2",
+          units: "metric",
+        };
+        const url = `${filter.api}?q=${input}&appid=${filter.appid}&units=${filter.units}`;
+        const result = await axios.get(url);
+        setCardList(
+          cardList.map((card) => {
+            if (card.id === newInputOpenWeather.id) {
+              card.content = result.data;
+              card.time = dateFormat(now, "dddd, mmmm d, yy, h:MM:ss TT");
+              return card;
+            } else {
+              return card;
+            }
+          })
+        );
+
+        setModalCode({ EditOpenWeatherCode: false });
+        setValidate({ OpenWeather: false });
+      } catch (err) {
+        const dateFormat = require("dateformat");
+        const now = new Date();
+        setCardList(
+          cardList.map((card) => {
+            if (card.id === newInputOpenWeather.id) {
+              card.content = { input: input, valid: true };
+              card.time = dateFormat(now, "dddd, mmmm d, yy, h:MM:ss TT");
+              return card;
+            } else {
+              return card;
+            }
+          })
+        );
+        setModalCode({ EditOpenWeatherCode: false });
+        setValidate({ OpenWeather: false });
+        console.log(err.response);
+      }
+    } else {
+      setValidate({ OpenWeather: true });
+    }
+  };
 
   return (
     <div className="pt-3">
       <div className="mb-4">
-        {/* <button onClick={test}>asd</button> */}
         <Modal
           showModal={showModal}
           onClickIconCancle={onClickIconCancle}
@@ -272,23 +426,39 @@ const App = () => {
           onClickBtnEditJustSay={onClickBtnEditJustSay}
           onClickBtnEditJustShout={onClickBtnEditJustShout}
           onClickBtnAddJustShout={onClickBtnAddJustShout}
+          onClickBtnAddOpenWeather={onClickBtnAddOpenWeather}
+          onClickBtnEditOpenWeather={onClickBtnEditOpenWeather}
         >
           <div>
             <h2 className="text-xl undefined"> Add widget</h2>
             <div className="flex flex-wrap text-center mt-1.5 -ml-1.5">
-              <div onClick={onClickWidgetJustSay} className="w-1/3 pt-1.5 pl-1.5">
+              <div
+                onClick={onClickWidgetJustSay}
+                className="w-1/3 pt-1.5 pl-1.5"
+              >
                 <WidgetJustSay />
               </div>
-              <div onClick={onClickWidgetJustShout} className="w-1/3 pt-1.5 pl-1.5">
-                <WidgetJustShout/>
+              <div
+                onClick={onClickWidgetJustShout}
+                className="w-1/3 pt-1.5 pl-1.5"
+              >
+                <WidgetJustShout />
               </div>
-              <div onClick={onClickWidgetCounter} className="w-1/3 pt-1.5 pl-1.5">
+              <div
+                onClick={onClickWidgetCounter}
+                className="w-1/3 pt-1.5 pl-1.5"
+              >
                 <WidgetCounter />
               </div>
               <div onClick={onClickWidgetTimer} className="w-1/3 pt-1.5 pl-1.5">
                 <WidgetTimer />
               </div>
-              <div className="w-1/3 pt-1.5 pl-1.5">b</div>
+              <div
+                onClick={onClickWidgetOpenWeather}
+                className="w-1/3 pt-1.5 pl-1.5"
+              >
+                <WidgetOpenWeather />
+              </div>
               <div className="w-1/3 pt-1.5 pl-1.5">c</div>
             </div>
           </div>
@@ -300,7 +470,9 @@ const App = () => {
           <div>
             <h2 className="text-xl mb-4">Settings</h2>
             <div className="p-5 border-1 bg-white rounded-2xl relative mb-4">
-              <h2 className="text-lg font-bold text-gray-400 mb-1.5">Statistics</h2>
+              <h2 className="text-lg font-bold text-gray-400 mb-1.5">
+                Statistics
+              </h2>
               <div className="table">
                 <div className="table-row">
                   <div className="table-cell pr-4 font-semibold">
@@ -310,23 +482,27 @@ const App = () => {
                 </div>
                 <div className="table-row">
                   <div className="table-cell pr-4 font-semibold">
-                    Total Just length:   {countAddJustSay + sumOfJustShout}
+                    Total Just length: 
                   </div>
-                  <div className="table-cell">{}</div>
+                  <div className="table-cell">{countAddJustSay + sumOfJustShout}</div>
                 </div>
                 <div className="table-row">
-                  <div className="table-cell pr-4 font-semibold">Total count: </div>
+                  <div className="table-cell pr-4 font-semibold">
+                    Total count:{" "}
+                  </div>
                   <div className="table-cell">{countCounter}</div>
                 </div>
                 <div className="table-row">
-                  <div className="table-cell pr-4 font-semibold">Total time: </div>
+                  <div className="table-cell pr-4 font-semibold">
+                    Total time:{" "}
+                  </div>
                   <div className="table-cell">00:00</div>
                 </div>
                 <div className="table-row">
                   <div className="table-cell pr-4 font-semibold">
-                    Coldest cities:{" "}
+                    Coldest cities:
                   </div>
-                  <div className="table-cell">N/A</div>
+                  <div className="table-cell">{city}</div>
                 </div>
               </div>
             </div>
@@ -334,28 +510,32 @@ const App = () => {
               <h2 className="text-lg font-bold text-gray-400 mb-1.5">
                 JustShout text
               </h2>
-              <fieldset 
+              <fieldset
               // disabled=""
               >
                 <form className="flex" onSubmit={(e) => e.preventDefault()}>
                   <div className="flex-1 mr-1">
                     <input
-                      onChange={(event) => setSettingJustShout(event.target.value)}
+                      onChange={(event) =>
+                        setSettingJustShout(event.target.value)
+                      }
                       type="text"
                       className="w-full px-2.5 py-1 border 
                 
                       rounded-md"
                       placeholder="Enter text"
                       // value=""
-                      // focus:outline-none 
+                      // focus:outline-none
                     />
                   </div>
                   <div>
                     <button
-                      onClick={() => onClickBtnEditJustShoutSetting(settingJustShout)}
+                      onClick={() =>
+                        onClickBtnEditJustShoutSetting(settingJustShout)
+                      }
                       className="text-whitepx-4 py-1 rounded-md bg-gray-300"
                       //  cursor-default
-                      // focus:outline-none 
+                      // focus:outline-none
                       // disabled=""
                     >
                       {" "}
@@ -366,7 +546,9 @@ const App = () => {
               </fieldset>
             </div>
             <div className="p-5 border-1 bg-white rounded-2xl relative mb-4">
-              <h2 className="text-lg font-bold text-gray-400 mb-1.5">Reset Zone</h2>
+              <h2 className="text-lg font-bold text-gray-400 mb-1.5">
+                Reset Zone
+              </h2>
               <div className="flex items-center">
                 <select className="flex-1 mt-1 mr-1.5 py-1.5 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 text-sm">
                   <option value="Counter">All counters</option>
@@ -399,45 +581,14 @@ const App = () => {
           onClick={onClickAddWidget}
           className="text-white focus:outline-none mr-1 px-4 py-1 rounded-md bg-blue-500 hover:bg-blue-600"
         >
-          {/* <svg
-            stroke="currentColor"
-            fill="currentColor"
-            stroke-width="0"
-            viewBox="0 0 24 24"
-            className="inline-block text-xl relative -top-0.5"
-            height="1em"
-            width="1em"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <g>
-              <path fill="none" d="M0 0h24v24H0z"></path>
-              <path d="M11 11V7h2v4h4v2h-4v4h-2v-4H7v-2h4zm1 11C6.477 22 2 17.523 2 12S6.477 2 12 2s10 4.477 10 10-4.477 10-10 10zm0-2a8 8 0 1 0 0-16 8 8 0 0 0 0 16z"></path>
-            </g>
-          </svg> */}
-
-          <RiAddCircleLine className="inline-block text-xl relative -top-0.5"/>
+          <RiAddCircleLine className="inline-block text-xl relative -top-0.5" />
           Add Widget
         </button>
         <button
           onClick={onClickSetting}
           className="text-white focus:outline-none px-4 py-1 rounded-md bg-gray-500 hover:bg-gray-600"
         >
-          {/* <svg
-            stroke="currentColor"
-            fill="currentColor"
-            stroke-width="0"
-            viewBox="0 0 24 24"
-            className="inline-block text-xl relative -top-0.5"
-            height="1em"
-            width="1em"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <g>
-              <path fill="none" d="M0 0h24v24H0z"></path>
-              <path d="M3.34 17a10.018 10.018 0 0 1-.978-2.326 3 3 0 0 0 .002-5.347A9.99 9.99 0 0 1 4.865 4.99a3 3 0 0 0 4.631-2.674 9.99 9.99 0 0 1 5.007.002 3 3 0 0 0 4.632 2.672c.579.59 1.093 1.261 1.525 2.01.433.749.757 1.53.978 2.326a3 3 0 0 0-.002 5.347 9.99 9.99 0 0 1-2.501 4.337 3 3 0 0 0-4.631 2.674 9.99 9.99 0 0 1-5.007-.002 3 3 0 0 0-4.632-2.672A10.018 10.018 0 0 1 3.34 17zm5.66.196a4.993 4.993 0 0 1 2.25 2.77c.499.047 1 .048 1.499.001A4.993 4.993 0 0 1 15 17.197a4.993 4.993 0 0 1 3.525-.565c.29-.408.54-.843.748-1.298A4.993 4.993 0 0 1 18 12c0-1.26.47-2.437 1.273-3.334a8.126 8.126 0 0 0-.75-1.298A4.993 4.993 0 0 1 15 6.804a4.993 4.993 0 0 1-2.25-2.77c-.499-.047-1-.048-1.499-.001A4.993 4.993 0 0 1 9 6.803a4.993 4.993 0 0 1-3.525.565 7.99 7.99 0 0 0-.748 1.298A4.993 4.993 0 0 1 6 12c0 1.26-.47 2.437-1.273 3.334a8.126 8.126 0 0 0 .75 1.298A4.993 4.993 0 0 1 9 17.196zM12 15a3 3 0 1 1 0-6 3 3 0 0 1 0 6zm0-2a1 1 0 1 0 0-2 1 1 0 0 0 0 2z"></path>
-            </g>
-          </svg> */}
-          <RiSettings3Line className="inline-block text-xl relative -top-0.5"/>
+          <RiSettings3Line className="inline-block text-xl relative -top-0.5" />
           Setting
         </button>
       </div>
@@ -470,6 +621,8 @@ const App = () => {
             BtnDecreaseCounter={BtnDecreaseCounter}
             BtnSetZero={BtnSetZero}
             MapJustShout={MapJustShout}
+            onClickOpenWeatherRefresh={onClickOpenWeatherRefresh}
+            onClickIconEditOpenWeather={onClickIconEditOpenWeather}
           />
         ) : null}
 
