@@ -3,6 +3,7 @@ import Counter from "./counter";
 import Timer from "./timer";
 import JustShout from "./justShout";
 import OpenWeather from "./openWeather";
+import Virus from "./virus"
 
 const Allcard = ({
   cardList,
@@ -62,6 +63,11 @@ const Allcard = ({
           onClickCloseCard={() => onClickCloseCard(item)}
         />
       );
+    }
+    else if (item.check == "Virus"){
+      return(
+        <Virus key={item.id} item={item.content}/>
+      )
     }
   });
 

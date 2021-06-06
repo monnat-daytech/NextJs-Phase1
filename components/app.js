@@ -3,6 +3,7 @@ import WidgetJustSay from "./WidgetCards/widgetJustSay";
 import WidgetTimer from "./WidgetCards/widgetTimer";
 import WidgetJustShout from "./WidgetCards/widgetJustShout";
 import WidgetOpenWeather from "./WidgetCards/widgetOpenWeather";
+import WidgetVirus from "./WidgetCards/widgetVirus";
 import { useState } from "react";
 import Modal from "./modal";
 import Allcard from "./Cards/allcard";
@@ -11,7 +12,7 @@ import { RiAddCircleLine, RiSettings3Line } from "react-icons/ri";
 import axios from "axios";
 
 const App = () => {
-  const [city, setCity] = useState("");
+  const [city, setCity] = useState("N/A");
   const [numOfJustShout, setNumOfJustShout] = useState(0);
   const [sumOfJustShout, setSumOfJustShout] = useState(0);
   const [countJustShout, setCountJustShout] = useState(0);
@@ -42,6 +43,7 @@ const App = () => {
     EditJustShoutCode: false,
     OpenWeatherCode: false,
     EditOpenWeatherCode: false,
+    Virus: false,
   });
 
   const BtnIncreaseCounter = (number) => {
@@ -117,9 +119,11 @@ const App = () => {
   const onClickCloseCard = (item) => {
     setCardList(cardList.filter((_item) => _item.id !== item.id));
     cardList.map((card) => {
-      if (card.id === item.id) {
-        setCountAddJustSay(countAddJustSay - item.content.length);
-      }
+      try {
+        if (card.id === item.id) {
+          setCountAddJustSay(countAddJustSay - item.content.length);
+        }
+      } catch {}
     });
   };
 
@@ -204,8 +208,7 @@ const App = () => {
         ];
         setCardList(newData);
         setValidate({ JustSay: false });
-      }
-      else{
+      } else {
         setValidate({ JustSay: true });
       }
     } else {
@@ -413,6 +416,42 @@ const App = () => {
     }
   };
 
+  const onClickWidgetVirus = () => {
+    setModalCode({ VirusCode: true });
+    setShowModal(false);
+  }
+
+  const onClickBtnAddVirus = (input) => {
+    const idr = Math.floor(Math.random() * 1000) + 1;
+    const options = {
+      method: 'GET',
+      url: 'https://covid-19-data.p.rapidapi.com/country',
+      params: {name: input},
+      headers: {
+        'x-rapidapi-key': 'cd18618be8msh01fe8b5f98ae76ep15ed2ejsn58e902df913d',
+        'x-rapidapi-host': 'covid-19-data.p.rapidapi.com'
+      }
+    };
+    axios
+      .request(options)
+      .then(function (response) {
+        setShowModal(false);
+        setModalCode(false);
+        const newDatas = [
+          ...cardList,
+          {
+            content: response.data,
+            check: "Virus",
+            id: idr,
+          },
+        ];
+        setCardList(newDatas);
+      })
+      .catch(function (error) {
+        console.error(error);
+      });
+  };
+
   return (
     <div className="pt-3">
       <div className="mb-4">
@@ -428,6 +467,7 @@ const App = () => {
           onClickBtnAddJustShout={onClickBtnAddJustShout}
           onClickBtnAddOpenWeather={onClickBtnAddOpenWeather}
           onClickBtnEditOpenWeather={onClickBtnEditOpenWeather}
+          onClickBtnAddVirus={onClickBtnAddVirus}
         >
           <div>
             <h2 className="text-xl undefined"> Add widget</h2>
@@ -459,7 +499,9 @@ const App = () => {
               >
                 <WidgetOpenWeather />
               </div>
-              <div className="w-1/3 pt-1.5 pl-1.5">c</div>
+              <div className="w-1/3 pt-1.5 pl-1.5" onClick={onClickWidgetVirus}>
+                <WidgetVirus />
+              </div>
             </div>
           </div>
         </Modal>
@@ -482,9 +524,11 @@ const App = () => {
                 </div>
                 <div className="table-row">
                   <div className="table-cell pr-4 font-semibold">
-                    Total Just length: 
+                    Total Just length:
                   </div>
-                  <div className="table-cell">{countAddJustSay + sumOfJustShout}</div>
+                  <div className="table-cell">
+                    {countAddJustSay + sumOfJustShout}
+                  </div>
                 </div>
                 <div className="table-row">
                   <div className="table-cell pr-4 font-semibold">
