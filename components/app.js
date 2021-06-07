@@ -14,7 +14,7 @@ import { useEffect } from "react";
 
 const App = () => {
   const [city, setCity] = useState("N/A");
-  const [prefillJustShout , setPrefillJustShout] = useState()
+  const [prefillJustShout, setPrefillJustShout] = useState();
   const [checkJustShout, setCheckJustShout] = useState(false);
   const [numOfJustShout, setNumOfJustShout] = useState(0);
   const [sumOfJustShout, setSumOfJustShout] = useState(0);
@@ -33,16 +33,44 @@ const App = () => {
       id: "",
     },
   ]);
+  // const [local , setLocal] = useState([{
+  //   TotalJustLength : countAddJustSay + sumOfJustShout ,
+  //   TotalCount : countCounter,
+  //   ColdestCities : city,
+  // }])
+
   useEffect(() => {
     const data = localStorage.getItem("my-card-list")
+    const data2 = localStorage.getItem("my-counter-list")
+    const data3 = localStorage.getItem("my-city-list")
+    const data4 = localStorage.getItem("my-countjustsay-list")
+    const data5 = localStorage.getItem("my-countjustshout-list")
+    
     if(data) {
       setCardList(JSON.parse(data))
+    }
+    if(data2) {
+      setCountCounter(JSON.parse(data2))
+    }
+    if(data3){
+      setCity(JSON.parse(data3))
+    }
+    if(data4){
+      setCountAddJustSay(JSON.parse(data4))
+    }
+    if(data5){
+      setSumOfJustShout(JSON.parse(data5))
     }
   }, [])
 
   useEffect(() => {
     localStorage.setItem("my-card-list" , JSON.stringify(cardList));
-  })  
+    localStorage.setItem("my-counter-list" , JSON.stringify(countCounter));
+    localStorage.setItem("my-city-list" , JSON.stringify(city))
+    localStorage.setItem("my-countjustsay-list" , JSON.stringify(countAddJustSay))
+    localStorage.setItem("my-countjustshout-list" , JSON.stringify(sumOfJustShout))
+  })
+  
   const [validate, setValidate] = useState({
     JustSay: false,
     Counter: false,
@@ -71,7 +99,6 @@ const App = () => {
   };
 
   const BtnSetZero = (number) => {
-    console.log(number);
     setCountCounter(countCounter - number);
   };
 
@@ -84,20 +111,24 @@ const App = () => {
     setCardList([0]);
     setCountCounter(0);
     setCountAddJustSay(0);
+    setPrefillJustShout('')
+    setNumOfJustShout(0);
+    setSumOfJustShout(0);
+    setCity("N/A");
   };
 
-  const onClickBtnSetZero = () => {
-    setShowSetting(false);
+  const onClickSettingBtnSetZero = () => {
     setCardList(
-      cardList.map((card) => {
+      cardList.filter((card) => {
         if (card.check === "Counter") {
-          card.content = 0;
-          return card;
+          return (card.content = 0);
         } else {
           return card;
         }
       })
     );
+    setCountCounter(0);
+    setShowSetting(false);
   };
 
   const onClickBtnEditJustSay = (input) => {
@@ -136,19 +167,26 @@ const App = () => {
   };
 
   const onClickCloseCard = (item) => {
-    
     setCardList(cardList.filter((_item) => _item.id !== item.id));
     cardList.map((card) => {
       try {
-        if (card.id === item.id) {
+        if (card.id === item.id && card.check === "JustSay") {
           setCountAddJustSay(countAddJustSay - item.content.length);
         }
-        if(card.check !== "JustShout"){
-          setPrefillJustShout('')
+        if (card.id === item.id && card.check != "JustShout") {
+          // setCountAddJustSay(countAddJustSay - item.content.length);
+          setPrefillJustShout("");
         }
-      } catch {}
+        if (card.id === item.id && card.check === "JustShout") {
+          setNumOfJustShout(numOfJustShout - 1)
+        }
+        if (card.id === item.id && card.check === "Counter") {
+          setCountCounter(countCounter - card.content);
+        }
+      } catch {
+
+      }
     });
-    
   };
 
   const onClickWidgetCounter = () => {
@@ -162,7 +200,7 @@ const App = () => {
   };
 
   const onClickWidgetJustShout = () => {
-    setModalCode({ JustShoutCode: true  });
+    setModalCode({ JustShoutCode: true });
     setShowModal(false);
   };
 
@@ -266,7 +304,7 @@ const App = () => {
         { content: input, check: "JustShout", id: idr },
       ];
       setCardList(newData);
-      setPrefillJustShout(input)
+      setPrefillJustShout(input);
       setValidate({ JustShout: false });
     } else {
       setValidate({ JustShout: true });
@@ -290,8 +328,8 @@ const App = () => {
   const onClickIconEditJustShout = (item) => {
     cardList.map((card) => {
       if (card.id === item.id) {
-        setModalCode({ EditJustShoutCode: true  });
-        setPrefillJustShout(item.content)
+        setModalCode({ EditJustShoutCode: true });
+        setPrefillJustShout(item.content);
       }
     });
   };
@@ -317,7 +355,7 @@ const App = () => {
   };
   const onClickBtnEditJustShoutSetting = (input) => {
     if (input.length > 2) {
-      setCountJustShout(settingJustShout.length);
+      setCountJustShout(input.length);
       setCardList(
         cardList.map((card) => {
           if (card.check === "JustShout") {
@@ -328,7 +366,7 @@ const App = () => {
           }
         })
       );
-      setPrefillJustShout(input)
+      setPrefillJustShout(input);
       setShowSetting(false);
     } else {
       alert("error");
@@ -499,7 +537,6 @@ const App = () => {
         console.error(error);
       });
   };
-
   return (
     <div className="pt-3">
       <div className="mb-4">
@@ -664,7 +701,7 @@ const App = () => {
                   <option value="Timer">All timers</option>
                 </select>
                 <button
-                  onClick={onClickBtnSetZero}
+                  onClick={onClickSettingBtnSetZero}
                   className="text-white focus:outline-none px-4 py-1 rounded-md bg-red-500 hover:bg-red-600"
                 >
                   {" "}
@@ -734,12 +771,6 @@ const App = () => {
             onClickIconEditOpenWeather={onClickIconEditOpenWeather}
           />
         ) : null}
-
-        {/* {showListCard} */}
-
-        {/* {widgetShowCards.JustSayCard ? (
-       
-        ) : null} */}
       </div>
     </div>
   );
