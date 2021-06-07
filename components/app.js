@@ -10,10 +10,11 @@ import Allcard from "./Cards/allcard";
 import ModalSetting from "./modalSetting";
 import { RiAddCircleLine, RiSettings3Line } from "react-icons/ri";
 import axios from "axios";
+import { useEffect } from "react";
 
 const App = () => {
   const [city, setCity] = useState("N/A");
-  const [data, setData] = useState("");
+  const [prefillJustShout , setPrefillJustShout] = useState()
   const [checkJustShout, setCheckJustShout] = useState(false);
   const [numOfJustShout, setNumOfJustShout] = useState(0);
   const [sumOfJustShout, setSumOfJustShout] = useState(0);
@@ -32,6 +33,16 @@ const App = () => {
       id: "",
     },
   ]);
+  useEffect(() => {
+    const data = localStorage.getItem("my-card-list")
+    if(data) {
+      setCardList(JSON.parse(data))
+    }
+  }, [])
+
+  useEffect(() => {
+    localStorage.setItem("my-card-list" , JSON.stringify(cardList));
+  })  
   const [validate, setValidate] = useState({
     JustSay: false,
     Counter: false,
@@ -46,7 +57,7 @@ const App = () => {
     OpenWeatherCode: false,
     EditOpenWeatherCode: false,
     Virus: false,
-    ph: "",
+    PrefillJustSay: "",
   });
 
   const BtnIncreaseCounter = (number) => {
@@ -119,8 +130,7 @@ const App = () => {
 
     cardList.map((card) => {
       if (card.id === item.id) {
-        setModalCode({ EditJustSayCode: true, ph: item.content });
-        setData(item.content);
+        setModalCode({ EditJustSayCode: true, PrefillJustSay: item.content });
       }
     });
   };
@@ -133,8 +143,12 @@ const App = () => {
         if (card.id === item.id) {
           setCountAddJustSay(countAddJustSay - item.content.length);
         }
+        if(card.check !== "JustShout"){
+          setPrefillJustShout('')
+        }
       } catch {}
     });
+    
   };
 
   const onClickWidgetCounter = () => {
@@ -148,7 +162,7 @@ const App = () => {
   };
 
   const onClickWidgetJustShout = () => {
-    setModalCode({ JustShoutCode: true });
+    setModalCode({ JustShoutCode: true  });
     setShowModal(false);
   };
 
@@ -252,6 +266,7 @@ const App = () => {
         { content: input, check: "JustShout", id: idr },
       ];
       setCardList(newData);
+      setPrefillJustShout(input)
       setValidate({ JustShout: false });
     } else {
       setValidate({ JustShout: true });
@@ -272,8 +287,13 @@ const App = () => {
     );
   };
 
-  const onClickIconEditJustShout = () => {
-    setModalCode({ EditJustShoutCode: true });
+  const onClickIconEditJustShout = (item) => {
+    cardList.map((card) => {
+      if (card.id === item.id) {
+        setModalCode({ EditJustShoutCode: true  });
+        setPrefillJustShout(item.content)
+      }
+    });
   };
 
   const onClickBtnEditJustShout = (input) => {
@@ -308,6 +328,7 @@ const App = () => {
           }
         })
       );
+      setPrefillJustShout(input)
       setShowSetting(false);
     } else {
       alert("error");
@@ -495,7 +516,7 @@ const App = () => {
           onClickBtnAddOpenWeather={onClickBtnAddOpenWeather}
           onClickBtnEditOpenWeather={onClickBtnEditOpenWeather}
           onClickBtnAddVirus={onClickBtnAddVirus}
-          data={data}
+          prefillJustShout={prefillJustShout}
         >
           <div>
             <h2 className="text-xl undefined"> Add widget</h2>
@@ -587,6 +608,7 @@ const App = () => {
                   <form className="flex" onSubmit={(e) => e.preventDefault()}>
                     <div className="flex-1 mr-1">
                       <input
+                        defaultValue={prefillJustShout}
                         onChange={(event) =>
                           setSettingJustShout(event.target.value)
                         }

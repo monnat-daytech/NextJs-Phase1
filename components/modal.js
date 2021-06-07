@@ -14,12 +14,11 @@ const Modal = ({
   onClickBtnAddOpenWeather,
   onClickBtnEditOpenWeather,
   onClickBtnAddVirus,
-  data,
+  prefillJustShout,
   onClickIconCancle = () => {},
 
 }) => {
   const [input, setInput] = useState();
-  const [prefill , setPrefill] = useState('');
   return (
     <>
       {showModal ? (
@@ -92,7 +91,7 @@ const Modal = ({
                 <form className="flex" onSubmit={(e) => e.preventDefault()} >
                   <div className="flex-1 mr-1">
                     <input
-           
+                      defaultValue={modalCode.PrefillJustSay}
                       onChange={(event) => setInput(event.target.value)}
                       type="text"
                       className="w-full px-2.5 py-1 border focus:outline-none rounded-md"
@@ -181,6 +180,7 @@ const Modal = ({
                 <form className="flex" onSubmit={(e) => e.preventDefault()}>
                   <div className="flex-1 mr-1">
                     <input
+                      defaultValue={prefillJustShout}
                       onChange={(event) => setInput(event.target.value)}
                       type="text"
                       className="w-full px-2.5 py-1 border focus:outline-none rounded-md"
@@ -222,6 +222,7 @@ const Modal = ({
                 <form className="flex" onSubmit={(e) => e.preventDefault()}>
                   <div className="flex-1 mr-1">
                     <input
+                      defaultValue={prefillJustShout}
                       onChange={(event) => setInput(event.target.value)}
                       type="text"
                       className="w-full px-2.5 py-1 border focus:outline-none rounded-md"
