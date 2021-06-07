@@ -13,6 +13,8 @@ import axios from "axios";
 
 const App = () => {
   const [city, setCity] = useState("N/A");
+  const [data, setData] = useState("");
+  const [checkJustShout, setCheckJustShout] = useState(false);
   const [numOfJustShout, setNumOfJustShout] = useState(0);
   const [sumOfJustShout, setSumOfJustShout] = useState(0);
   const [countJustShout, setCountJustShout] = useState(0);
@@ -44,6 +46,7 @@ const App = () => {
     OpenWeatherCode: false,
     EditOpenWeatherCode: false,
     Virus: false,
+    ph: "",
   });
 
   const BtnIncreaseCounter = (number) => {
@@ -113,10 +116,17 @@ const App = () => {
   };
   const onClickIconEditJustSay = (item) => {
     setNewInputJustSay(item);
-    setModalCode({ EditJustSayCode: true, asd: item.content });
+
+    cardList.map((card) => {
+      if (card.id === item.id) {
+        setModalCode({ EditJustSayCode: true, ph: item.content });
+        setData(item.content);
+      }
+    });
   };
 
   const onClickCloseCard = (item) => {
+    
     setCardList(cardList.filter((_item) => _item.id !== item.id));
     cardList.map((card) => {
       try {
@@ -163,6 +173,13 @@ const App = () => {
             setCity(card.content.name);
           }
         } catch {}
+      }
+    });
+    cardList.map((card) => {
+      if (card.check === "JustShout") {
+        setCheckJustShout(true);
+      } else {
+        setCheckJustShout(false);
       }
     });
   };
@@ -235,6 +252,7 @@ const App = () => {
         { content: input, check: "JustShout", id: idr },
       ];
       setCardList(newData);
+      setValidate({ JustShout: false });
     } else {
       setValidate({ JustShout: true });
     }
@@ -255,36 +273,45 @@ const App = () => {
   };
 
   const onClickIconEditJustShout = () => {
-    // setnewInputJustSay(item);
     setModalCode({ EditJustShoutCode: true });
   };
+
   const onClickBtnEditJustShout = (input) => {
-    setCountJustShout(input.length);
-    setModalCode({ EditJustSayCode: false });
-    setCardList(
-      cardList.map((card) => {
-        if (card.check === "JustShout") {
-          card.content = input;
-          return card;
-        } else {
-          return card;
-        }
-      })
-    );
+    if (input.length > 2) {
+      setCountJustShout(input.length);
+      setModalCode({ EditJustSayCode: false });
+      setCardList(
+        cardList.map((card) => {
+          if (card.check === "JustShout") {
+            card.content = input;
+            return card;
+          } else {
+            return card;
+          }
+        })
+      );
+      setValidate({ JustShout: false });
+    } else {
+      setValidate({ JustShout: true });
+    }
   };
-  const onClickBtnEditJustShoutSetting = () => {
-    setCountJustShout(settingJustShout.length);
-    setCardList(
-      cardList.map((card) => {
-        if (card.check === "JustShout") {
-          card.content = settingJustShout;
-          return card;
-        } else {
-          return card;
-        }
-      })
-    );
-    setShowSetting(false);
+  const onClickBtnEditJustShoutSetting = (input) => {
+    if (input.length > 2) {
+      setCountJustShout(settingJustShout.length);
+      setCardList(
+        cardList.map((card) => {
+          if (card.check === "JustShout") {
+            card.content = settingJustShout;
+            return card;
+          } else {
+            return card;
+          }
+        })
+      );
+      setShowSetting(false);
+    } else {
+      alert("error");
+    }
   };
 
   const onClickBtnAddOpenWeather = async (input) => {
@@ -419,18 +446,18 @@ const App = () => {
   const onClickWidgetVirus = () => {
     setModalCode({ VirusCode: true });
     setShowModal(false);
-  }
+  };
 
   const onClickBtnAddVirus = (input) => {
     const idr = Math.floor(Math.random() * 1000) + 1;
     const options = {
-      method: 'GET',
-      url: 'https://covid-19-data.p.rapidapi.com/country',
-      params: {name: input},
+      method: "GET",
+      url: "https://covid-19-data.p.rapidapi.com/country",
+      params: { name: input },
       headers: {
-        'x-rapidapi-key': 'cd18618be8msh01fe8b5f98ae76ep15ed2ejsn58e902df913d',
-        'x-rapidapi-host': 'covid-19-data.p.rapidapi.com'
-      }
+        "x-rapidapi-key": "cd18618be8msh01fe8b5f98ae76ep15ed2ejsn58e902df913d",
+        "x-rapidapi-host": "covid-19-data.p.rapidapi.com",
+      },
     };
     axios
       .request(options)
@@ -468,6 +495,7 @@ const App = () => {
           onClickBtnAddOpenWeather={onClickBtnAddOpenWeather}
           onClickBtnEditOpenWeather={onClickBtnEditOpenWeather}
           onClickBtnAddVirus={onClickBtnAddVirus}
+          data={data}
         >
           <div>
             <h2 className="text-xl undefined"> Add widget</h2>
@@ -554,40 +582,55 @@ const App = () => {
               <h2 className="text-lg font-bold text-gray-400 mb-1.5">
                 JustShout text
               </h2>
-              <fieldset
-              // disabled=""
-              >
-                <form className="flex" onSubmit={(e) => e.preventDefault()}>
-                  <div className="flex-1 mr-1">
-                    <input
-                      onChange={(event) =>
-                        setSettingJustShout(event.target.value)
-                      }
-                      type="text"
-                      className="w-full px-2.5 py-1 border 
-                
-                      rounded-md"
-                      placeholder="Enter text"
-                      // value=""
-                      // focus:outline-none
-                    />
-                  </div>
-                  <div>
-                    <button
-                      onClick={() =>
-                        onClickBtnEditJustShoutSetting(settingJustShout)
-                      }
-                      className="text-whitepx-4 py-1 rounded-md bg-gray-300"
-                      //  cursor-default
-                      // focus:outline-none
-                      // disabled=""
-                    >
-                      {" "}
-                      Edit
-                    </button>
-                  </div>
-                </form>
-              </fieldset>
+              {checkJustShout ? (
+                <fieldset>
+                  <form className="flex" onSubmit={(e) => e.preventDefault()}>
+                    <div className="flex-1 mr-1">
+                      <input
+                        onChange={(event) =>
+                          setSettingJustShout(event.target.value)
+                        }
+                        type="text"
+                        className="w-full px-2.5 py-1 border focus:outline-none rounded-md"
+                        placeholder="Enter text"
+                      />
+                    </div>
+                    <div>
+                      <button
+                        onClick={() =>
+                          onClickBtnEditJustShoutSetting(settingJustShout)
+                        }
+                        className="text-white focus:outline-none px-4 py-1 rounded-md bg-blue-500 hover:bg-blue-600"
+                      >
+                        {" "}
+                        Edit
+                      </button>
+                    </div>
+                  </form>
+                </fieldset>
+              ) : (
+                <fieldset disabled>
+                  <form className="flex">
+                    <div className="flex-1 mr-1">
+                      <input
+                        type="text"
+                        className="w-full px-2.5 py-1 border focus:outline-none rounded-md"
+                        placeholder="Enter text"
+                        value=""
+                      />
+                    </div>
+                    <div>
+                      <button
+                        className="text-white focus:outline-none px-4 py-1 rounded-md bg-gray-300 cursor-default"
+                        disabled=""
+                      >
+                        {" "}
+                        Edit
+                      </button>
+                    </div>
+                  </form>
+                </fieldset>
+              )}
             </div>
             <div className="p-5 border-1 bg-white rounded-2xl relative mb-4">
               <h2 className="text-lg font-bold text-gray-400 mb-1.5">

@@ -14,10 +14,12 @@ const Modal = ({
   onClickBtnAddOpenWeather,
   onClickBtnEditOpenWeather,
   onClickBtnAddVirus,
+  data,
   onClickIconCancle = () => {},
+
 }) => {
   const [input, setInput] = useState();
-
+  const [prefill , setPrefill] = useState('');
   return (
     <>
       {showModal ? (
@@ -86,10 +88,11 @@ const Modal = ({
             </button>
             <div>
               <fieldset>
-                <h2 className="text-xl mb-2"> Edit Just Say</h2>
-                <form className="flex" onSubmit={(e) => e.preventDefault()}>
+                <h2 className="text-xl mb-2">Edit Just Say</h2>
+                <form className="flex" onSubmit={(e) => e.preventDefault()} >
                   <div className="flex-1 mr-1">
                     <input
+           
                       onChange={(event) => setInput(event.target.value)}
                       type="text"
                       className="w-full px-2.5 py-1 border focus:outline-none rounded-md"
@@ -193,11 +196,11 @@ const Modal = ({
                     </button>
                   </div>
                 </form>
-                {/* {validate.JustSay ? (
+                {validate.JustShout ? (
                   <div className="text-red-600 text-xs mt-1">
                     Please enter at least 3 characters.
                   </div>
-                ) : null} */}
+                ) : null}
               </fieldset>
             </div>
           </div>
@@ -234,7 +237,7 @@ const Modal = ({
                     </button>
                   </div>
                 </form>
-                {validate.JustSay ? (
+                {validate.JustShout ? (
                   <div className="text-red-600 text-xs mt-1">
                     Please enter at least 3 characters.
                   </div>
@@ -338,7 +341,7 @@ const Modal = ({
             </button>
             <div>
               <fieldset>
-                <h2 className="text-xl mb-2">Enter a city</h2>
+                <h2 className="text-xl mb-2">Enter a country</h2>
                 <form className="flex" onSubmit={(e) => e.preventDefault()}>
                   <div className="flex-1 mr-1">
                     <input

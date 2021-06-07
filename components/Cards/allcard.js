@@ -3,7 +3,7 @@ import Counter from "./counter";
 import Timer from "./timer";
 import JustShout from "./justShout";
 import OpenWeather from "./openWeather";
-import Virus from "./virus"
+import Virus from "./virus";
 
 const Allcard = ({
   cardList,
@@ -19,7 +19,6 @@ const Allcard = ({
 }) => {
   const showListCard = cardList.map((item) => {
     if (item.check === "JustSay") {
-
       return (
         <JustSay
           key={item.id}
@@ -59,15 +58,18 @@ const Allcard = ({
           key={item.id}
           item={item}
           onClickOpenWeatherRefresh={() => onClickOpenWeatherRefresh(item)}
-          onClickIconEditOpenWeather={() => onClickIconEditOpenWeather (item)}
+          onClickIconEditOpenWeather={() => onClickIconEditOpenWeather(item)}
           onClickCloseCard={() => onClickCloseCard(item)}
         />
       );
-    }
-    else if (item.check == "Virus"){
-      return(
-        <Virus key={item.id} item={item.content}/>
-      )
+    } else if (item.check == "Virus") {
+      return (
+        <Virus
+          key={item.id}
+          item={item.content}
+          onClickCloseCard={() => onClickCloseCard(item)}
+        />
+      );
     }
   });
 
